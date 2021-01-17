@@ -7,14 +7,12 @@ use jni::objects::{JClass, JString};
 use jni::sys::jstring;
 
 #[no_mangle]
-pub extern "system" fn Java_Keyring_getSecret(
+pub extern "system" fn Java_org_yellolab_Keyring_getSecret(
     env: JNIEnv,
     _class: JClass,
     domain_string: JString,
     username_string: JString,
 ) -> jstring {
-    // First, we have to get the string out of Java. Check out the `strings`
-    // module for more info on how this works.
     let domain: String = env
         .get_string(domain_string)
         .expect("Couldn't get java string!")
@@ -26,7 +24,11 @@ pub extern "system" fn Java_Keyring_getSecret(
 
     let keyring = keyring::Keyring::new(&domain, &username);
 
-    let new = keyring.get_password().unwrap();
+    //TODO: This is not ideal.
+    let new = match keyring.get_password() {
+        Ok(value) => value,
+        Err(_) => String::default(),
+    };
 
     let output = env.new_string(new).expect("Couldn't create java string!");
 
@@ -34,15 +36,13 @@ pub extern "system" fn Java_Keyring_getSecret(
 }
 
 #[no_mangle]
-pub extern "system" fn Java_Keyring_setSecret(
+pub extern "system" fn Java_org_yellolab_Keyring_setSecret(
     env: JNIEnv,
     _class: JClass,
     domain_string: JString,
     username_string: JString,
     password_string: JString,
 ) -> jstring {
-    // First, we have to get the string out of Java. Check out the `strings`
-    // module for more info on how this works.
     let domain: String = env
         .get_string(domain_string)
         .expect("Couldn't get java string!")
@@ -60,7 +60,9 @@ pub extern "system" fn Java_Keyring_setSecret(
 
     keyring.set_password(&password).unwrap();
 
-    let output = env.new_string(password).expect("Couldn't create java string!");
+    let output = env
+        .new_string(password)
+        .expect("Couldn't create java string!");
 
     output.into_inner()
 }
