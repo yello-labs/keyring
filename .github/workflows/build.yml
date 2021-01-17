@@ -22,7 +22,7 @@ jobs:
         with:
           toolchain: ${{ matrix.rust }}
 
-      -name: Setup Java
+      - name: Setup Java
         uses: actions/setup-java@v1
         with:
           java-version: 1.8
