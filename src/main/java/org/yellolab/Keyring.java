@@ -4,7 +4,8 @@ import java.util.Objects;
 
 public class Keyring {
 	static {
-		System.load("/home/dakota/IdeaProjects/keyring/keyring-jni/target/release/libkeyring_jni.so");
+		//TODO: pull from classloader
+		System.load(Objects.requireNonNull(Keyring.class.getClassLoader().getResource("libkeyring_jni.so")).getFile());
 	}
 	
 	public static native String getSecret(String domain, String userName);
