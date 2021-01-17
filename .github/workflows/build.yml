@@ -4,23 +4,28 @@ on: [ push ]
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ ubuntu-latest, windows-latest, macOS-latest ]
+        rust: [ stable, nightly ]
 
     steps:
       - name: Install Build Environment
         run: sudo apt-get install libdbus-glib-1-dev
+      - name: Pull Source Code
+        uses: actions/checkout@v2
 
-      - uses: actions/checkout@v2
-      - name: Set up JDK 1.8
-
-        uses:
-          raftario/setup-rust-action@v1
-          actions/setup-java@v1
-
-
+      - name: Setup Build Environment
 
         with:
           java-version: 1.8
-      - name: Build with Gradle
+          rust-version: ${{ matrix.rust }}
+
+        uses:
+          hecrj/setup-rust-action@v1
+          actions/setup-java@v1
+
+      - name: Build
         run: ./gradlew build
 
