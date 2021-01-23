@@ -1,20 +1,36 @@
-
 use jni::objects::{JClass, JString, JThrowable};
-use jni::sys::{jstring};
+use jni::sys::jstring;
 use jni::JNIEnv;
 use keyring::KeyringError;
 
 fn handle_exception(env: JNIEnv, e: KeyringError) -> Option<JThrowable> {
     match e {
-        KeyringError::NoBackendFound => env.throw_new("org/yellolab/exceptions/NoBackendFoundException", e.to_string()),
-        KeyringError::NoPasswordFound => env.throw_new("org/yellolab/exceptions/NoPasswordFoundException", e.to_string()),
-        KeyringError::Parse(_) => env.throw_new("org/yellolab/exceptions/ParseException", e.to_string()),
+        KeyringError::NoBackendFound => env.throw_new(
+            "org/yellolab/exceptions/NoBackendFoundException",
+            e.to_string(),
+        ),
+        KeyringError::NoPasswordFound => env.throw_new(
+            "org/yellolab/exceptions/NoPasswordFoundException",
+            e.to_string(),
+        ),
+        KeyringError::Parse(_) => {
+            env.throw_new("org/yellolab/exceptions/ParseException", e.to_string())
+        }
         #[cfg(target_os = "macos")]
-        KeyringError::MacOsKeychainError(_) => env.throw_new("org/yellolab/exceptions/MacOsKeychainException", e.to_string()),
+        KeyringError::MacOsKeychainError(_) => env.throw_new(
+            "org/yellolab/exceptions/MacOsKeychainException",
+            e.to_string(),
+        ),
         #[cfg(target_os = "windows")]
-        KeyringError::WindowsVaultError => env.throw_new("org/yellolab/exceptions/WindowsVaultException", e.to_string()),
+        KeyringError::WindowsVaultError => env.throw_new(
+            "org/yellolab/exceptions/WindowsVaultException",
+            e.to_string(),
+        ),
         #[cfg(target_os = "linux")]
-        KeyringError::SecretServiceError(_) => env.throw_new("org/yellolab/exceptions/SecretServiceException", e.to_string()),
+        KeyringError::SecretServiceError(_) => env.throw_new(
+            "org/yellolab/exceptions/SecretServiceException",
+            e.to_string(),
+        ),
     }
     .unwrap();
     match env.exception_occurred() {

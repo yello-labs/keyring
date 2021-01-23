@@ -1,10 +1,14 @@
 package org.yellolab;
 
+import java.io.File;
 import java.util.Objects;
 
 public class Keyring {
 	static {
-		System.load(Objects.requireNonNull(Keyring.class.getClassLoader().getResource("libkeyring_jni.so")).getFile());
+		String nativeLibrary = "libkeyring_jni";
+		ClassLoader classLoader = Keyring.class.getClassLoader();
+		File nativeLibraryFile = new File(Objects.requireNonNull(classLoader.getResource(nativeLibrary)).getFile());
+		System.load(nativeLibraryFile.getAbsolutePath());
 	}
 	
 	public static native String getSecret(String domain, String userName) throws Exception;

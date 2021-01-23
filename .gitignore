@@ -13,3 +13,7 @@ build
 .idea
 .vscode
 .gradle
+
+
+#jni files that we want generated every time.
+libkeyring_jni
