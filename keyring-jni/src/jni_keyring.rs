@@ -1,6 +1,6 @@
-use jni::errors::Error;
+
 use jni::objects::{JClass, JString, JThrowable};
-use jni::sys::{jstring, jthrowable};
+use jni::sys::{jstring};
 use jni::JNIEnv;
 use keyring::KeyringError;
 
