@@ -1,26 +1,21 @@
-use std::os::raw::c_int;
-
-use jni::JNIEnv;
 use jni::objects::{JClass, JString};
-use jni::sys::{jstring, jthrowable};
+use jni::sys::jstring;
+use jni::JNIEnv;
 use keyring::KeyringError;
 
 fn handle_exception(env: JNIEnv, e: KeyringError) {
     match e {
-        KeyringError::SecretServiceError(_) => {
-            env.throw_new("java/lang/Exception", e.to_string())
-        }
-        KeyringError::NoBackendFound => {
-            env.throw_new("java/lang/Exception", e.to_string())
-        }
-        KeyringError::NoPasswordFound => {
-            env.throw_new("java/lang/Exception", e.to_string())
-        }
-        KeyringError::Parse(_) => {
-            env.throw_new("java/lang/Exception", e.to_string())
-        }
-        _ => {env.throw_new("java/lang/Exception", e.to_string())}
-    };
+        KeyringError::NoBackendFound => env.throw_new("java/lang/Exception", e.to_string()),
+        KeyringError::NoPasswordFound => env.throw_new("java/lang/Exception", e.to_string()),
+        KeyringError::Parse(_) => env.throw_new("java/lang/Exception", e.to_string()),
+        #[cfg(target_os = "macos")]
+        KeyringError::MacOsKeychainError(_) => env.throw_new("java/lang/Exception", e.to_string()),
+        #[cfg(target_os = "windows")]
+        KeyringError::WindowsVaultError => env.throw_new("java/lang/Exception", e.to_string()),
+        #[cfg(target_os = "linux")]
+        KeyringError::SecretServiceError(_) => env.throw_new("java/lang/Exception", e.to_string()),
+    }
+    .unwrap();
 }
 
 #[no_mangle]
