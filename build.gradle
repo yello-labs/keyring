@@ -20,6 +20,7 @@ dependencies {
 }
 
 task cargoBuild(type: Exec) {
+
     workingDir './keyring-jni/'
     if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
         commandLine 'cmd', '/c', 'cargo', 'build', '--release'
@@ -34,6 +35,6 @@ jar {
     }
 }
 
-build {
+compileJava {
     dependsOn(cargoBuild)
 }
