@@ -1,6 +1,7 @@
 package org.yellolab;
 
 import org.junit.Test;
+import org.yellolab.exceptions.KeyringException;
 
 import java.util.UUID;
 
@@ -15,7 +16,7 @@ public class KeyringTest {
 		Keyring.getSecret("no", "not");
 	}
 	
-	@Test
+	@Test(expected = KeyringException.class)
 	public void getSecretExpectException() throws Exception {
 		//Likelihood of collisions with real entries are astronomically low
 		Keyring.getSecret(UUID.randomUUID().toString(), UUID.randomUUID().toString());
