@@ -1,9 +1,10 @@
-use jni::objects::{JClass, JString};
-use jni::sys::jstring;
+use jni::errors::Error;
+use jni::objects::{JClass, JString, JThrowable};
+use jni::sys::{jstring, jthrowable};
 use jni::JNIEnv;
 use keyring::KeyringError;
 
-fn handle_exception(env: JNIEnv, e: KeyringError) {
+fn handle_exception(env: JNIEnv, e: KeyringError) -> Option<JThrowable> {
     match e {
         KeyringError::NoBackendFound => env.throw_new("java/lang/Exception", e.to_string()),
         KeyringError::NoPasswordFound => env.throw_new("java/lang/Exception", e.to_string()),
@@ -16,6 +17,10 @@ fn handle_exception(env: JNIEnv, e: KeyringError) {
         KeyringError::SecretServiceError(_) => env.throw_new("java/lang/Exception", e.to_string()),
     }
     .unwrap();
+    match env.exception_occurred() {
+        Ok(e) => Some(e),
+        _ => None,
+    }
 }
 
 #[no_mangle]
@@ -39,8 +44,7 @@ pub extern "system" fn Java_org_yellolab_Keyring_getSecret(
     let password: String = match keyring.get_password() {
         Ok(value) => value,
         Err(e) => {
-            handle_exception(env, e);
-            format!("")
+            return handle_exception(env, e).unwrap().into_inner();
         }
     };
 
@@ -76,7 +80,7 @@ pub extern "system" fn Java_org_yellolab_Keyring_setSecret(
 
     match keyring.set_password(&password) {
         Err(e) => {
-            handle_exception(env, e);
+            return handle_exception(env, e).unwrap().into_inner();
         }
         _ => {}
     }
@@ -108,7 +112,7 @@ pub extern "system" fn Java_org_yellolab_Keyring_deleteSecret(
 
     match keyring.delete_password() {
         Err(e) => {
-            handle_exception(env, e);
+            return handle_exception(env, e).unwrap().into_inner();
         }
         _ => {}
     }
