@@ -9,10 +9,22 @@ jobs:
       matrix:
         os: [ ubuntu-latest, windows-latest, macOS-latest ]
         rust: [ stable ]
+        java: [ 1.8 ]
 
     steps:
-      - name: Install Build Environment
-        run: sudo apt-get install libdbus-glib-1-dev
+      - name: Install libdbus Environment
+        run: |
+          sudo apt update
+          sudo apt install libdbus-1-dev
+        if: contains(matrix.os, 'ubuntu')
+
+      - name: install stable toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: ${{ matrix.rust }}
+          components: clippy
+          profile: minimal
+          override: true
 
       - name: Pull Source Code
         uses: actions/checkout@v2
@@ -25,7 +37,7 @@ jobs:
       - name: Setup Java
         uses: actions/setup-java@v1
         with:
-          java-version: 1.8
+          java-version: ${{ matrix.java }}
 
       - name: Build
         run: ./gradlew build
