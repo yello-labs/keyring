@@ -49,7 +49,7 @@ public class KeyringTest {
   public void setSecret() throws Exception {
     Keyring.setSecret("secret", "secret", "S3(r37");
   }
-  
+
   @Test(dependsOnMethods = {"testForNativeLibrary", "setSecret"})
   public void deleteSecret() throws Exception {
     Keyring.deleteSecret("secret", "secret");
