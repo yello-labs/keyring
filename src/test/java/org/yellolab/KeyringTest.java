@@ -32,7 +32,7 @@ public class KeyringTest {
     Keyring.setSecret("no", "not", "working");
   }
 
-  @Test(dependsOnMethods = {"testForNativeLibrary"})
+  @Test(dependsOnMethods = {"testForNativeLibrary", "setSecretBlindly"})
   public void getSecret() throws Exception {
     Keyring.getSecret("no", "not");
   }
@@ -47,8 +47,11 @@ public class KeyringTest {
 
   @Test(dependsOnMethods = {"testForNativeLibrary"})
   public void setSecret() throws Exception {
-    Keyring.setSecret("", "", "");
-    Keyring.getSecret("", "");
-    Keyring.deleteSecret("", "");
+    Keyring.setSecret("secret", "secret", "S3(r37");
+  }
+  
+  @Test(dependsOnMethods = {"testForNativeLibrary", "setSecret"})
+  public void deleteSecret() throws Exception {
+    Keyring.deleteSecret("secret", "secret");
   }
 }
