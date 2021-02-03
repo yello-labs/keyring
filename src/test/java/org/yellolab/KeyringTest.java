@@ -1,56 +1,52 @@
 package org.yellolab;
 
-import java.io.File;
-import java.util.Objects;
+import java.net.URL;
 import java.util.UUID;
-import org.testng.Assert;
+import org.testng.SkipException;
 import org.testng.annotations.Test;
 import org.yellolab.exceptions.KeyringException;
 
 public class KeyringTest {
 
   @Test
-  public void testForNativeLibrary() {
-    String nativeLibrary = "libkeyring_jni";
+  public void testForNativeLibraries() {
+    // Make sure this thing has all of the so included
+    String[] libraries =
+        new String[] {"libkeyring_jni.so", "libkeyring_jni.dylib", "libkeyring_jni.dll"};
     ClassLoader classLoader = Keyring.class.getClassLoader();
-    File nativeLibraryFile =
-        new File(Objects.requireNonNull(classLoader.getResource(nativeLibrary)).getFile());
+    for (String nativeLibrary : libraries) {
+      URL resourceLocation = classLoader.getResource(nativeLibrary);
 
-    Assert.assertNotNull(nativeLibrary);
-    Assert.assertNotNull(classLoader);
-    Assert.assertNotNull(nativeLibraryFile);
-    try {
-      Keyring.getSecret("", "");
-    } catch (org.yellolab.exceptions.KeyringException ignored) {
-    } catch (Exception e) {
-      Assert.fail();
+      if (resourceLocation == null) {
+        throw new SkipException("We are missing a native library, this is not ready for release");
+      }
     }
   }
 
-  @Test(dependsOnMethods = {"testForNativeLibrary"})
+  @Test
   public void setSecretBlindly() throws Exception {
     Keyring.setSecret("no", "not", "working");
   }
 
-  @Test(dependsOnMethods = {"testForNativeLibrary", "setSecretBlindly"})
+  @Test(dependsOnMethods = {"setSecretBlindly"})
   public void getSecret() throws Exception {
     Keyring.getSecret("no", "not");
   }
 
   @Test(
-      dependsOnMethods = {"testForNativeLibrary"},
+      dependsOnMethods = {"setSecretBlindly"},
       expectedExceptions = {KeyringException.class})
   public void getSecretExpectException() throws Exception {
     // Likelihood of collisions with real entries are astronomically low
     Keyring.getSecret(UUID.randomUUID().toString(), UUID.randomUUID().toString());
   }
 
-  @Test(dependsOnMethods = {"testForNativeLibrary"})
+  @Test(dependsOnMethods = {"setSecretBlindly"})
   public void setSecret() throws Exception {
     Keyring.setSecret("secret", "secret", "S3(r37");
   }
 
-  @Test(dependsOnMethods = {"testForNativeLibrary", "setSecret"})
+  @Test(dependsOnMethods = {"setSecretBlindly", "setSecret"})
   public void deleteSecret() throws Exception {
     Keyring.deleteSecret("secret", "secret");
   }

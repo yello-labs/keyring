@@ -29,21 +29,17 @@ dependencies {
 
 task cargoBuild(type: Exec) {
     workingDir './keyring-jni/'
+    def build_command = ['cargo', 'build', '-Z', 'unstable-options', '--release', '--out-dir' , 'cargo_out']
     if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
-        commandLine 'cmd', '/c', 'cargo', 'build', '--release'
+        commandLine 'cmd', '/c', build_command
     } else {
-        commandLine 'cargo', 'build', '--release'
+        commandLine build_command
     }
 }
 
 task getLibFromRust(type: Copy) {
-    dependsOn cargoBuild
-    from('keyring-jni/target/release/') {
+    from('keyring-jni/cargo_out/') {
         include 'libkeyring_jni*'
-        exclude '*.d'
-        rename {
-            'libkeyring_jni'
-        }
     }
     into 'src/main/resources/'
 }
