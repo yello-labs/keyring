@@ -16,5 +16,5 @@ build
 
 
 #jni files that we want generated every time.
-libkeyring_jni*
+*keyring_jni*
 cargo_out

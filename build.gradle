@@ -18,9 +18,8 @@ java {
 }
 
 sourceSets.main.resources {
-    srcDir "src/main/resources"
-    srcDir "keyring-jni/target/release"
-    include "libkeyring_jni**"
+    srcDir "keyring-jni/cargo_out"
+    include "*"
 }
 
 dependencies {
@@ -38,12 +37,8 @@ task cargoBuild(type: Exec) {
     }
 }
 
-task getLibFromRust(type: Copy) {
+task getLibFromRust {
     dependsOn cargoBuild //To run on CI use -xcargoBuild and supply any libraries in the keyring-jni/cargo_out dir
-    from('keyring-jni/cargo_out/') {
-        include '*'
-    }
-    into 'src/main/resources/'
 
     doLast {
         File srcDir = file('src/main/resources/')
@@ -51,6 +46,10 @@ task getLibFromRust(type: Copy) {
         logger.info("Contents of $srcDir.name")
         collection.collect { relativePath(it) }.sort().each { logger.info(it) }
     }
+}
+
+clean {
+    delete 'src/main/resources/'
 }
 
 test {
