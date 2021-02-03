@@ -41,8 +41,7 @@ task cargoBuild(type: Exec) {
 task getLibFromRust(type: Copy) {
     dependsOn cargoBuild //To run on CI use -xcargoBuild and supply any libraries in the keyring-jni/cargo_out dir
     from('keyring-jni/cargo_out/') {
-        include 'libkeyring_jni*'
-        include 'keyring_jni*'
+        include '*'
     }
     into 'src/main/resources/'
 }
