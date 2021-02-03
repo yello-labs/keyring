@@ -31,7 +31,8 @@ task cargoBuild(type: Exec) {
     workingDir './keyring-jni/'
     def build_command = ['cargo', 'build', '-Z', 'unstable-options', '--release', '--out-dir' , 'cargo_out']
     if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
-        commandLine 'cmd', '/c', build_command
+        build_command = ['cmd', '/c'] + build_command
+        commandLine build_command
     } else {
         commandLine build_command
     }
