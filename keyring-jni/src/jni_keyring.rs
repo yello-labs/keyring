@@ -6,29 +6,29 @@ use keyring::KeyringError;
 fn handle_exception(env: JNIEnv, e: KeyringError) -> Option<JThrowable> {
     match e {
         KeyringError::NoBackendFound => env.throw_new(
-            "org/yellolab/exceptions/NoBackendFoundException",
+            "org/yello/labs/exceptions/NoBackendFoundException",
             e.to_string(),
         ),
         KeyringError::NoPasswordFound => env.throw_new(
-            "org/yellolab/exceptions/NoPasswordFoundException",
+            "org/yello/labs/exceptions/NoPasswordFoundException",
             e.to_string(),
         ),
         KeyringError::Parse(_) => {
-            env.throw_new("org/yellolab/exceptions/ParseException", e.to_string())
+            env.throw_new("org/yello/labs/exceptions/ParseException", e.to_string())
         }
         #[cfg(target_os = "macos")]
         KeyringError::MacOsKeychainError(_) => env.throw_new(
-            "org/yellolab/exceptions/MacOsKeychainException",
+            "org/yello/labs/exceptions/MacOsKeychainException",
             e.to_string(),
         ),
         #[cfg(target_os = "windows")]
         KeyringError::WindowsVaultError => env.throw_new(
-            "org/yellolab/exceptions/WindowsVaultException",
+            "org/yello/labs/exceptions/WindowsVaultException",
             e.to_string(),
         ),
         #[cfg(target_os = "linux")]
         KeyringError::SecretServiceError(_) => env.throw_new(
-            "org/yellolab/exceptions/SecretServiceException",
+            "org/yello/labs/exceptions/SecretServiceException",
             e.to_string(),
         ),
     }
@@ -40,7 +40,7 @@ fn handle_exception(env: JNIEnv, e: KeyringError) -> Option<JThrowable> {
 }
 
 #[no_mangle]
-pub extern "system" fn Java_org_yellolab_Keyring_getSecret(
+pub extern "system" fn Java_org_yello_labs_Keyring_getSecret(
     env: JNIEnv,
     _class: JClass,
     domain_string: JString,
@@ -72,7 +72,7 @@ pub extern "system" fn Java_org_yellolab_Keyring_getSecret(
 }
 
 #[no_mangle]
-pub extern "system" fn Java_org_yellolab_Keyring_setSecret(
+pub extern "system" fn Java_org_yello_labs_Keyring_setSecret(
     env: JNIEnv,
     _class: JClass,
     domain_string: JString,
@@ -109,7 +109,7 @@ pub extern "system" fn Java_org_yellolab_Keyring_setSecret(
 }
 
 #[no_mangle]
-pub extern "system" fn Java_org_yellolab_Keyring_deleteSecret(
+pub extern "system" fn Java_org_yello_labs_Keyring_deleteSecret(
     env: JNIEnv,
     _class: JClass,
     domain_string: JString,
