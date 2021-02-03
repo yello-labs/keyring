@@ -1,0 +1,23 @@
+name: dbus headless check
+
+on: [ push ]
+
+jobs:
+  build_java:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ ubuntu-latest ]
+    steps:
+      - name: Install libdbus Environment
+        run: |
+          sudo apt update
+          sudo apt install gnome-keyring
+          sudo apt install libsecret-tools
+          sudo apt install dbus-x11
+          env -u DISPLAY dbus-launch --sh-syntax
+          sudo service dbus start 
+          dbus-daemon --session --nopidfile --nofork --address=unix:path=local/bus
+
+      - name: Check dbus config
+        run: printf "apassword" | secret-tool store --label="test" foo bar
