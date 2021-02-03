@@ -3,7 +3,7 @@ name: Java CI
 on: [ push ]
 
 jobs:
-  build:
+  build_rust:
     env:
       OUT_DIR: /rust_out
     runs-on: ${{ matrix.os }}
@@ -11,7 +11,7 @@ jobs:
       matrix:
 #        os: [ ubuntu-latest, windows-latest, macOS-latest ]  #Why cant you be normal!
         os: [ windows-latest, macOS-latest ]
-        rust: [ stable ]
+        rust: [ nightly ]  #The outdir option is incubating
         java: [ 1.8 ]
 
     steps:
@@ -39,6 +39,18 @@ jobs:
         with:
           toolchain: ${{ matrix.rust }}
 
+  build_java:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        #        os: [ ubuntu-latest, windows-latest, macOS-latest ]  #Why cant you be normal!
+        os: [ windows-latest, macOS-latest ]
+        rust: [ nightly ]  #The outdir option is incubating
+        java: [ 1.8 ]
+    steps:
+      - name: Pull Source Code
+        uses: actions/checkout@v2
+
       - name: Setup Java
         uses: actions/setup-java@v1
         with:
@@ -52,9 +64,3 @@ jobs:
         with:
           name: gradle-test-report
           path: /home/runner/work/keyring/keyring/build/reports/tests/test
-
-      - name: Archive Rust Object
-        uses: actions/upload-artifact@v2
-        with:
-          name: rust-binary
-          path: ${{ env.OUT_DIR }}
