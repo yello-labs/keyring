@@ -71,9 +71,9 @@ jobs:
 
       - name: resolve_binaries
         uses: actions/download-artifact@v2
-          with:
-            name: keyring_binary
-            path: ./keyring-jni/cargo_out/
+        with:
+          name: keyring_binary
+          path: ./keyring-jni/cargo_out/
 
 #     need to see what this looks like first
 #      - name: Resolve Rust Binaries
