@@ -70,11 +70,10 @@ jobs:
           java-version: ${{ matrix.java }}
 
       - name: resolve_binaries
-        steps:
-          - uses: actions/download-artifact@v2
-            with:
-              name: keyring_binary
-              path: ./keyring-jni/cargo_out/
+        uses: actions/download-artifact@v2
+          with:
+            name: keyring_binary
+            path: ./keyring-jni/cargo_out/
 
 #     need to see what this looks like first
 #      - name: Resolve Rust Binaries
