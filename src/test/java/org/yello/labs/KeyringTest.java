@@ -1,11 +1,11 @@
-package org.yellolab;
+package org.yello.labs;
 
 import java.net.URL;
 import java.util.UUID;
 import org.testng.Assert;
 import org.testng.SkipException;
 import org.testng.annotations.Test;
-import org.yellolab.exceptions.KeyringException;
+import org.yello.labs.exceptions.KeyringException;
 
 public class KeyringTest {
 

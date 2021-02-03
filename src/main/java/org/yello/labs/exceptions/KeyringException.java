@@ -1,4 +1,4 @@
-package org.yellolab.exceptions;
+package org.yello.labs.exceptions;
 
 /**
  * * Exceptions used in the rust jni library. Mapped from the rust keyring package enum

@@ -1,4 +1,4 @@
-package org.yellolab;
+package org.yello.labs;
 
 import java.io.File;
 import java.io.FileOutputStream;
