@@ -5,7 +5,7 @@ plugins {
     id 'java-gradle-plugin'
 }
 
-group 'org.yellolab'
+group 'org.yello-labs'
 version '0.1.0'
 
 repositories {
@@ -77,8 +77,8 @@ spotless {
 }
 
 pluginBundle {
-    website = 'https://github.com/yellolab/keyring'
-    vcsUrl = 'https://github.com/yellolab/keyring.git'
+    website = 'https://github.com/yello-labs/keyring'
+    vcsUrl = 'https://github.com/yello-labs/keyring.git'
     tags = ['keyring']
 }
 
@@ -88,7 +88,7 @@ gradlePlugin {
             id = group + '.' + rootProject.name
             displayName = 'Keyring'
             description = 'Library for interacting with the Rust Keyring api'
-            implementationClass = 'org.yellolab.Keyring'
+            implementationClass = 'org.yello-labs.Keyring'
         }
     }
 }
