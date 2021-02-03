@@ -2,6 +2,7 @@ package org.yellolab;
 
 import java.net.URL;
 import java.util.UUID;
+import org.testng.Assert;
 import org.testng.SkipException;
 import org.testng.annotations.Test;
 import org.yellolab.exceptions.KeyringException;
@@ -25,7 +26,11 @@ public class KeyringTest {
 
   @Test
   public void setSecretBlindly() throws Exception {
-    Keyring.setSecret("no", "not", "working");
+    try {
+      Keyring.setSecret("no", "not", "working");
+    } catch (ExceptionInInitializerError e) {
+      Assert.fail("There was an error initializing the Keyring", e);
+    }
   }
 
   @Test(dependsOnMethods = {"setSecretBlindly"})

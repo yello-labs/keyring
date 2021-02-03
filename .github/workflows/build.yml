@@ -75,24 +75,8 @@ jobs:
           name: keyring_binary
           path: ./keyring-jni/cargo_out/
 
-#     need to see what this looks like first
-#      - name: Resolve Rust Binaries
-#        steps:
-#          - uses: actions/download-artifact@v2
-#            with:
-#              name:
-#              path: doodo
-#          - uses: actions/download-artifact@v2
-#            with:
-#              name:
-#              path: doodo
-#          - uses: actions/download-artifact@v2
-#            with:
-#              name:
-#              path: doodo
-
       - name: Build
-        run: ./gradlew build -x cargoBuild --stacktrace
+        run: ./gradlew build -x cargoBuild -i
 
       - name: Archive Test Report
         uses: actions/upload-artifact@v2
