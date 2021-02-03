@@ -13,7 +13,7 @@ public class KeyringTest {
   public void testForNativeLibraries() {
     // Make sure this thing has all of the so included
     String[] libraries =
-        new String[] {"libkeyring_jni.so", "libkeyring_jni.dylib", "libkeyring_jni.dll"};
+        new String[] {"libkeyring_jni.so", "libkeyring_jni.dylib", "keyring_jni.dll"};
     ClassLoader classLoader = Keyring.class.getClassLoader();
     for (String nativeLibrary : libraries) {
       URL resourceLocation = classLoader.getResource(nativeLibrary);

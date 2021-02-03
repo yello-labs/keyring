@@ -4,10 +4,11 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Objects;
 
 public class Keyring {
   static {
-    String nativeLibraryName = "libkeyring_jni";
+    String nativeLibraryName;
     { // Determine the operating system, to determine which library to expand into the host system
       String OS = System.getProperty("os.name").toLowerCase();
       boolean IS_WINDOWS = (OS.contains("win"));
@@ -15,11 +16,11 @@ public class Keyring {
       boolean IS_UNIX = (OS.contains("nix") || OS.contains("nux") || OS.contains("aix"));
 
       if (IS_WINDOWS) {
-        nativeLibraryName += ".dll";
+        nativeLibraryName = "keyring_jni.dll"; // why do you do this to me cargo?
       } else if (IS_MAC) {
-        nativeLibraryName += ".dylib";
+        nativeLibraryName = "libkeyring_jni.dylib";
       } else if (IS_UNIX) {
-        nativeLibraryName += ".so";
+        nativeLibraryName = "libkeyring_jni.so";
       } else {
         throw new RuntimeException("The OS {" + OS + "} is not supported by Keyring currently");
       }
@@ -30,6 +31,11 @@ public class Keyring {
     // that is needed for local running
     File temp;
     try (InputStream in = Keyring.class.getClassLoader().getResourceAsStream(nativeLibraryName)) {
+      if (Objects.isNull(in)) {
+        throw new RuntimeException(
+            "The library {" + nativeLibraryName + "} was not found in the Keyring library");
+      }
+
       byte[] buffer = new byte[1024];
       int read = -1;
       temp = File.createTempFile(nativeLibraryName, "");
