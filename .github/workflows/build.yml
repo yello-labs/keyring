@@ -86,6 +86,6 @@ jobs:
       - name: Archive Test Report
         uses: actions/upload-artifact@v2
         with:
-          name: gradle-test-report-${{ os.matrix }}
+          name: gradle-test-report
           path: ./build/reports/tests/test/
         if: ${{ failure() }}
