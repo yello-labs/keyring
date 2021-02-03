@@ -15,10 +15,11 @@ jobs:
           sudo apt install gnome-keyring libsecret-tools dbus-x11
           if [ -e /usr/bin/gnome-keyring-daemon ]; then
             if [ ! -z "`kill -0 $GNOME_KEYRING_PID 2>&1`" ]; then
-              eval 'dbus-launch --sh-syntax'
+              env -u DISPLAY dbus-launch --sh-syntax
               eval $(printf 'keyring_password' | /usr/bin/gnome-keyring-daemon --unlock --components=pkcs11,secrets,ssh)
               export SSH_AUTH_SOCK
               echo $SSH_AUTH_SOCK
+              printf "apassword" | secret-tool store --label="test" foo bar
             fi
           fi
 
