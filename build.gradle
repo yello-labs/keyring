@@ -44,6 +44,13 @@ task getLibFromRust(type: Copy) {
         include '*'
     }
     into 'src/main/resources/'
+
+    doLast {
+        File srcDir = file('src/main/resources/')
+        def collection = layout.files { srcDir.listFiles() }
+        logger.info("Contents of $srcDir.name")
+        collection.collect { relativePath(it) }.sort().each { logger.info(it) }
+    }
 }
 
 test {
