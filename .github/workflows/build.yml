@@ -4,8 +4,6 @@ on: [ push ]
 
 jobs:
   build_rust:
-    env:
-      OUT_DIR: /rust_out
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -39,11 +37,26 @@ jobs:
         with:
           toolchain: ${{ matrix.rust }}
 
+      - name: Setup Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: ${{ matrix.java }}
+
+      - name: Build Rust
+        run: ./gradlew cargoBuild
+
+      - name: Upload Rust Artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: keyring_binary
+          path: ./keyring-jni/cargo_out/*
+
   build_java:
     runs-on: ${{ matrix.os }}
+    needs: build_rust
     strategy:
       matrix:
-        #        os: [ ubuntu-latest, windows-latest, macOS-latest ]  #Why cant you be normal!
+#        os: [ ubuntu-latest, windows-latest, macOS-latest ]  #Why cant you be normal!
         os: [ windows-latest, macOS-latest ]
         rust: [ nightly ]  #The outdir option is incubating
         java: [ 1.8 ]
@@ -56,8 +69,31 @@ jobs:
         with:
           java-version: ${{ matrix.java }}
 
+      - name: resolve_binaries
+        steps:
+          - uses: actions/download-artifact@v2
+            with:
+              name: keyring_binary
+              path: ./keyring-jni/cargo_out/
+
+#     need to see what this looks like first
+#      - name: Resolve Rust Binaries
+#        steps:
+#          - uses: actions/download-artifact@v2
+#            with:
+#              name:
+#              path: doodo
+#          - uses: actions/download-artifact@v2
+#            with:
+#              name:
+#              path: doodo
+#          - uses: actions/download-artifact@v2
+#            with:
+#              name:
+#              path: doodo
+
       - name: Build
-        run: ./gradlew build -i --stacktrace
+        run: ./gradlew build -x cargoBuild --stacktrace
 
       - name: Archive Test Report
         uses: actions/upload-artifact@v2
