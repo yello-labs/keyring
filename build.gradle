@@ -76,11 +76,6 @@ spotless {
     }
 }
 
-pluginBundle {
-    website = 'https://github.com/yello-labs/keyring'
-    vcsUrl = 'https://github.com/yello-labs/keyring.git'
-    tags = ['keyring']
-}
 
 gradlePlugin {
     plugins {
@@ -88,7 +83,13 @@ gradlePlugin {
             id = group + '.' + rootProject.name
             displayName = 'Keyring'
             description = 'Library for interacting with the Rust Keyring api'
-            implementationClass = 'org.yello-labs.Keyring'
+            implementationClass = 'org.yello.labs.Keyring'
         }
     }
+}
+
+pluginBundle {
+    website = 'https://github.com/yello-labs/keyring'
+    vcsUrl = 'https://github.com/yello-labs/keyring.git'
+    tags = ['keyring']
 }
