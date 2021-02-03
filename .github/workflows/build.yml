@@ -75,9 +75,13 @@ jobs:
           sudo apt install gnome-keyring
           sudo apt install libsecret-tools
           sudo apt install dbus-x11
-          eval 'dbus-launch --sh-syntax'
-          eval $(printf 'keyring_password' | /usr/bin/gnome-keyring-daemon --unlock --components=pkcs11,secrets,ssh)
-          export SSH_AUTH_SOCK
+          if [ -e /usr/bin/gnome-keyring-daemon ]; then
+            if [ ! -z "`kill -0 $GNOME_KEYRING_PID 2>&1`" ]; then
+              eval 'dbus-launch --sh-syntax'
+              eval $(printf 'keyring_password' | /usr/bin/gnome-keyring-daemon --unlock --components=pkcs11,secrets,ssh)
+              export SSH_AUTH_SOCK
+            fi
+          fi
         if: contains(matrix.os, 'ubuntu')
 
       - name: Check dbus config
